@@ -9,31 +9,32 @@ import task01.service.StudentService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StudentServiceImpl implements StudentService {
-    private StudentDAO students;
+    private StudentDAO studentDAO;
 
     public StudentServiceImpl() {
         // проинициализировать захардкоженные данные
-        students = StudentHardCodeRepo.getInstance();
+        studentDAO = StudentHardCodeRepo.getInstance();
 
         // прочитать данные из файла
-//        students = new StudentFileRepo();
+//        studentDAO = new StudentFileRepo();
     }
 
     public void printAllData() {
-        students.getAll().forEach(x -> System.out.println(x.fullInfo()));
+        studentDAO.getAll().forEach(x -> System.out.println(x.fullInfo()));
     }
 
     public Student getByName(String name, String surname) {
-        return students.getByName(name, surname);
+        return studentDAO.getByName(name, surname);
     }
 
     private List<Student> sortStudents(Comparator<Student> comparator) {
-        return students.getAll()
+        return studentDAO.getAll()
                 .stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
@@ -51,7 +52,7 @@ public class StudentServiceImpl implements StudentService {
 
     public void printStudentsFilteredByCanStudy() {
         System.out.println("Список студентов по условию «Есть вероятность, что не будет отчислен» :");
-        students.getAll()
+        studentDAO.getAll()
                 .stream()
                 .filter(Student::isStudentCanStudy)
                 .collect(Collectors.toList())
@@ -62,12 +63,12 @@ public class StudentServiceImpl implements StudentService {
         Gson gson = new Gson();
 
         try {
-            FileUtils.writeStringToFile(new File("students.json")
-                    , gson.toJson(students.getAll())
+            FileUtils.writeStringToFile(new File("studentDAO.json")
+                    , gson.toJson(studentDAO.getAll())
                     , "UTF-8"
                     , false);
             FileUtils.writeStringToFile(new File("curriculums.json")
-                    , gson.toJson(students.getAll())
+                    , gson.toJson(studentDAO.getAll())
                     , "UTF-8"
                     , false);
         } catch (IOException e) {
